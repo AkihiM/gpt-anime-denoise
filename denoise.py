@@ -6,6 +6,7 @@ Default method (recommended): downscale to 60% -> Real-ESRGAN x4plus anime 6B ->
   python denoise.py image.png [more.png ...]            # default method only
   python denoise.py image.png --all                      # all 7 candidates + a 4x2 comparison sheet
   python denoise.py ./folder --out ./cleaned             # every image in a folder
+  python denoise.py image.png --l0 0.002                 # stronger L0 (0.001 is only the recommended value)
 
 Outputs keep the input size. Models are downloaded on first use into --models (default ~/.cache/gpt-anime-denoise).
 """
@@ -34,11 +35,11 @@ SHA256 = {
     "up2x-latest-denoise3x.pth": "0a14739f3f5fcbd74ec3ce2806d13a47916c916b20afe4a39d95f6df4ca6abd8",
 }
 DOWN = 0.6
-L0 = 0.001
+L0 = 0.001  # recommended default; tune with --l0 (larger = flatter, too large wipes soft blush/gradients)
 METHODS = ["esrgan60_l0", "esrgan60", "cugan60_l0", "cugan60", "apisr", "l0_0.001", "l0_0.0005"]
 LABELS = {"original": "original", "l0_0.0005": "L0 0.0005", "l0_0.001": "L0 0.001", "apisr": "APISR",
-          "cugan60": "CUGAN @60%", "cugan60_l0": "CUGAN @60% + L0 0.001",
-          "esrgan60": "ESRGAN @60%", "esrgan60_l0": "ESRGAN @60% + L0 0.001 (default)"}
+          "cugan60": "CUGAN @60%", "cugan60_l0": "CUGAN @60% + L0 {lam:g}",
+          "esrgan60": "ESRGAN @60%", "esrgan60_l0": "ESRGAN @60% + L0 {lam:g} (default)"}
 SHEET_ORDER = ["original", "l0_0.0005", "l0_0.001", "apisr", "cugan60", "cugan60_l0", "esrgan60", "esrgan60_l0"]
 
 
@@ -110,7 +111,7 @@ def sr_at(model, src, device):
     return upscale(model, small, device).resize((W, H), Image.LANCZOS)
 
 
-def run(src, methods, models, device):
+def run(src, methods, models, device, lam=L0):
     W, H = src.size
     out, cache = {}, {}
     for m in methods:
@@ -122,11 +123,11 @@ def run(src, methods, models, device):
             key = m.split("60")[0]
             if key not in cache:
                 cache[key] = sr_at(models[key], src, device)
-            out[m] = to_img(l0_smooth(to_arr(cache[key]), L0)) if m.endswith("_l0") else cache[key]
+            out[m] = to_img(l0_smooth(to_arr(cache[key]), lam)) if m.endswith("_l0") else cache[key]
     return out
 
 
-def sheet(src, res, path):
+def sheet(src, res, path, lam=L0):
     items = [("original", src)] + [(k, res[k]) for k in SHEET_ORDER[1:]]
     w, h = src.size
     g, top, cols = 20, max(40, w // 18), 4
@@ -142,7 +143,7 @@ def sheet(src, res, path):
     for i, (k, im) in enumerate(items):
         x, y = (i % cols) * (w + g), (i // cols) * (h + top + g)
         s.paste(im, (x, y + top))
-        d.text((x + 12, y + top // 5), LABELS[k], fill="white", font=font)
+        d.text((x + 12, y + top // 5), LABELS[k].format(lam=lam), fill="white", font=font)
     s.save(path)
 
 
@@ -152,6 +153,8 @@ def main():
     ap.add_argument("--out", help="output folder (default: <image folder>/<stem>_denoise)")
     ap.add_argument("--all", action="store_true", help="write all 7 candidates and a comparison sheet")
     ap.add_argument("--method", default="esrgan60_l0", choices=METHODS)
+    ap.add_argument("--l0", type=float, default=L0,
+                    help="L0 strength for the *_l0 methods (default 0.001; try 0.0005-0.002)")
     ap.add_argument("--models", default=str(Path.home() / ".cache" / "gpt-anime-denoise"))
     ap.add_argument("--device", default="cuda" if torch.cuda.is_available() else "cpu")
     a = ap.parse_args()
@@ -167,11 +170,11 @@ def main():
         src = Image.open(p).convert("RGB")
         out = Path(a.out) if a.out else p.parent / f"{p.stem}_denoise"
         out.mkdir(parents=True, exist_ok=True)
-        res = run(src, methods, models, a.device)
+        res = run(src, methods, models, a.device, a.l0)
         for k, im in res.items():
             im.save(out / f"{p.stem}_{k}.png")
         if a.all:
-            sheet(src, res, out / f"{p.stem}_sheet.png")
+            sheet(src, res, out / f"{p.stem}_sheet.png", a.l0)
         print(f"{p} -> {out}", flush=True)
 
 
