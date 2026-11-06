@@ -6,6 +6,12 @@ Removes the fish-scale texture that OpenAI's GPT image models leave in anime and
 
 **默认推荐：ESRGAN 缩 60% + L0 0.001** —— 对动漫与番剧画风有奇效。
 
+## 交流群
+
+QQ 群：**1130507071**，欢迎来做技术交流。群里聊 AI 视频、AI 建模、AI 绘画等内容，主打 agent base（dsh、Codex、Claude Code）+ 本地模型。
+
+## 用法
+
 ```bash
 pip install -r requirements.txt          # 先按 pytorch.org 装好对应 CUDA 的 torch
 python denoise.py image.png              # 默认方案，输出在 image_denoise/
@@ -89,7 +95,3 @@ python denoise.py image.png --l0 0.002   # 自行调节 L0 强度
   - 芙宁娜是《原神》角色（© HoYoverse），属于同人图。
   - 番剧截帧那张以 TV 动画《わたしが恋人になれるわけないじゃん、ムリムリ！》第 4 话官方先行场面图为构图参考（© みかみてれん・竹嶋えく／集英社・わたなれ製作委員会），画面里右下角的小字是生成时产生的乱码。
   - 示例图不适用代码的 MIT 许可，不可商用。
-
-## 交流群
-
-QQ 群：**1130507071**，欢迎来做技术交流。群里聊 AI 视频、AI 建模、AI 绘画等内容，主打 agent base（dsh、Codex、Claude Code）+ 本地模型。
