@@ -51,7 +51,7 @@ def run_job(id, strength, downscale):
             output = apply_protection(job)
             job.update(status='done', percent=100, stage='處理完成', output=output, device=device,
                        elapsed=round(time.time()-job['started'], 1), result_strength=strength, result_downscale=downscale)
-    except Exception as exc:
+    except (Exception, SystemExit) as exc:  # SystemExit: denoise.py exits on a bad model download
         logging.exception('Denoise failed')
         with LOCK:
             job.update(status='error', error='處理失敗：' + str(exc), stage='處理失敗')

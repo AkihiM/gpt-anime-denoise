@@ -1,6 +1,6 @@
 """GUI wrapper around CXP-2024's unchanged recommended pipeline (denoise.py)."""
 from pathlib import Path
-import gc, sys
+import gc, sys, urllib.error
 from PIL import Image
 import torch
 
@@ -44,11 +44,18 @@ upstream.upscale = safe_upscale
 
 def process(source, destination, strength, progress, downscale=.6):
     global MODEL
-    progress('載入動漫去噪模型', 10)
     if MODEL is None:
         if not (MODEL_DIR / MODEL_NAME).is_file():
             progress('首次使用：下載模型中（約 18 MB）', 5)
-        MODEL = upstream.load_model('esrgan', MODEL_DIR, DEVICE)
+        progress('載入動漫去噪模型', 10)
+        try:
+            MODEL = upstream.load_model('esrgan', MODEL_DIR, DEVICE)
+        except SystemExit as exc:   # upstream exits when the downloaded file fails its SHA-256 check
+            raise RuntimeError('模型下載不完整（校驗不符），請重試。') from exc
+        except urllib.error.URLError as exc:
+            raise RuntimeError(f'模型下載失敗，請檢查網路後重試。（{exc.reason}）') from None
+    else:
+        progress('載入動漫去噪模型', 10)
     with Image.open(source) as opened:
         image = opened.copy()
     alpha = image.getchannel('A') if image.mode == 'RGBA' else None
