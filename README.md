@@ -33,6 +33,11 @@ python denoise.py image.png --l0 0.002   # 自行调节 L0 强度
 
 模型在第一次运行时自动下载到 `~/.cache/gpt-anime-denoise`（共约 100 MB，带 SHA-256 校验），也可以用 `--models` 指定已有目录。有 NVIDIA 显卡最好；没有时自动用 CPU，会慢很多。一张约 1.6 MP 的图默认方案约 20 秒（L0 占大头）。
 
+### 图形界面
+
+不想敲命令，可以用本机网页界面：Windows 双击 `gui/start.bat`，其他系统运行 `python gui/server.py`。
+拖进图片就能去噪、左右拖动对比，还能用「保护笔刷」把被抹掉的细节（眼睛、线稿等）涂回原图。详见 [gui/README.md](gui/README.md)。
+
 ## 效果
 
 左边去噪前，右边默认方案去噪后。**请点开看原尺寸**，缩小后鳞纹看不出来。
