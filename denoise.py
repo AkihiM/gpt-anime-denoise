@@ -1,4 +1,4 @@
-"""Remove the fish-scale texture that GPT image models (gpt-image-2 / 2.5, ChatGPT, Codex image_gen) leave in
+"""Remove the fish-scale texture that GPT image models (gpt-image-2 / 2.5 / 2.6, ChatGPT, Codex image_gen) leave in
 anime and TV-anime style images.
 
 Default method (recommended): downscale to 60% -> Real-ESRGAN x4plus anime 6B -> resize back -> L0 smoothing 0.001.
