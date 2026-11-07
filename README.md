@@ -8,6 +8,8 @@ Removes the fish-scale texture that OpenAI's GPT image models leave in anime and
 
 **视频讲解（B 站）：** https://www.bilibili.com/video/BV1EC4B6rEMs/
 
+> 用本项目做出了满意的作品，欢迎在简介里 credit 本项目 [gpt-anime-denoise](https://github.com/CXP-2024/gpt-anime-denoise) 和作者 B 站 UP 主 hihihihi202。
+
 ## 交流群
 
 QQ 群：**1130507071**，欢迎来做技术交流。群里聊 AI 视频、AI 建模、AI 绘画等内容，主打 agent base（dsh、Codex、Claude Code）+ 本地模型。
@@ -87,13 +89,6 @@ python denoise.py image.png --l0 0.002   # 自行调节 L0 强度
 ## 作为 Claude Code / Codex skill 使用
 
 把整个目录放进 `.claude/skills/gpt-anime-denoise/`（或 Codex 的 skills 目录），`SKILL.md` 会告诉 agent 在 GPT 出完二次元图后跑这一步。
-
-## 使用本项目时请注明出处
-
-如果你用本项目做出了满意的作品，请在作品简介或说明里 credit 本项目和作者：
-
-- 项目：[gpt-anime-denoise](https://github.com/CXP-2024/gpt-anime-denoise)
-- 作者：B 站 UP 主 hihihihi202（[视频讲解](https://www.bilibili.com/video/BV1EC4B6rEMs/)）
 
 ## 许可
 
