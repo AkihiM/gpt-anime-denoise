@@ -8,7 +8,7 @@ Removes the fish-scale texture that OpenAI's GPT image models leave in anime and
 
 **视频讲解（B 站）：** https://www.bilibili.com/video/BV1EC4B6rEMs/
 
-> 用本项目做出了满意的作品，欢迎在简介里 credit 本项目 [gpt-anime-denoise](https://github.com/CXP-2024/gpt-anime-denoise) 和作者 B 站 UP 主 hihihihi202。
+> 如果您用本项目做出了满意的作品，麻烦在简介里 credit 本项目 [gpt-anime-denoise](https://github.com/CXP-2024/gpt-anime-denoise) 和作者 B 站 UP 主 hihihihi202。
 
 ## 交流群
 
